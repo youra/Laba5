@@ -1,0 +1,81 @@
+<project name="num4" default="all" >
+
+    <property name="src" value="src"/>
+    <property name="bin" value="bin"/>
+    <property name="doc" value="doc"/>
+    <property name="dist" value="dist"/>
+    <property name="test" value="test"/>
+    <property name="test.ru" value="${test}/ru"/>
+    <property name="test.bin" value="${test}/bin"/>
+    <property name="dist.jar" value="${dist}/laba5.jar"/>
+    <property name="junit" value="test/lib/junit-4.10.jar"/>
+	
+    <target name="compile" description="Компиляция проекта">
+        <echo>Компилируем...</echo>
+        <javac destdir="${bin}" includeantruntime="false">
+            <src path="${src}"/>
+        </javac>
+        <javac destdir="${test.bin}" includeantruntime="false">
+            <src path="${test.ru}"/>
+            <classpath>
+                <pathelement location="${junit}"/>
+                <pathelement location="${bin}"/>
+            </classpath>
+            </javac>
+    </target>
+
+    <target name="test" depends="compile">
+        <junit haltonerror="yes" printsummary="yes" haltonfailure="yes">
+           <classpath>
+               <pathelement location="${junit}"/>
+               <pathelement location="${test.bin}"/>
+               <pathelement location="${bin}"/>
+           </classpath>
+           <formatter type="plain" usefile="false" />
+           <batchtest fork="yes">
+                <fileset dir="${test.bin}" />
+           </batchtest>
+        </junit>
+    </target>
+
+    <target name="mklib" description="Создаем библиотеку">
+        <echo>Создаем каталоги</echo>
+        <delete dir="/home/youra/NetBeansProjects/Laba3Bin/bin"/>
+	<delete dir="/home/youra/NetBeansProjects/Laba3Bin/dist"/>
+        <mkdir dir="/home/youra/NetBeansProjects/Laba3Bin/bin"/>
+        <mkdir dir="/home/youra/NetBeansProjects/Laba3Bin/dist"/>
+        <javac destdir="/home/youra/NetBeansProjects/Laba3Bin/bin" includeantruntime="false">
+            <src path="/home/youra/NetBeansProjects/Laba3Bin/src"/>
+	</javac>
+	<jar destfile="/home/youra/NetBeansProjects/Laba3Bin/dist/lib.jar" basedir="/home/youra/NetBeansProjects/Laba3Bin/bin">
+            </jar>
+    </target>
+        
+    <target name="mkdirs" description="Создаем каталоги">
+        <echo>Создаем каталоги</echo>
+	<mkdir dir="${bin}"/>
+	<mkdir dir="${doc}"/>
+	<mkdir dir="${dist}"/>
+    </target>
+
+    <target name="all" description="Очистить и построить проект" depends="test,mklib,clean,mkdirs">
+        <echo>Работаем...</echo>
+        <javac destdir="${bin}" includeantruntime="false">
+            <src path="${src}"/>
+	</javac>
+	<javadoc sourcepath="${src}" destdir="${doc}" />
+	    <jar destfile="${dist.jar}" basedir="${bin}">
+	        <manifest>
+	            <attribute name="Main-Class" value="ru.shkarobeynikov.laba5.Laba5"/>
+		    <attribute name="Class-Path" value="/home/NetBeansProjects/Laba3Bin/dist/lib.jar"/>
+	        </manifest>
+	     </jar>
+    </target>
+
+    <target name="clean" description="Очистка">
+        <echo>Удаление каталогов</echo>
+	<delete dir="${bin}"/>
+	<delete dir="${doc}"/>
+	<delete dir="${dist}"/>
+    </target>
+</project>
